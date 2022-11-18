@@ -30,6 +30,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun CourseHeader(
+    imageUrl: String,
+    imageTitle: String,
+    imageDescription: String,
+    modifier: Modifier
+) {
+
+}
+
+@Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
