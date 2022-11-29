@@ -3,11 +3,13 @@ package com.example.composeplayground
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.composeplayground.ui.theme.ComposePlaygroundTheme
 
@@ -54,8 +57,41 @@ fun CourseHeader(
 ) {
     Row(modifier = modifier) {
         CourseHeaderAvatar(imageUrl = imageUrl, modifier = modifier)
+        CourseHeaderTitle(imageTitle, imageDescription, modifier)
     }
 }
+
+@Composable
+fun CourseHeaderTitle(
+    imageTitle: String,
+    imageDescription: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = Modifier
+            .padding(start = 16.dp)
+    ) {
+        Text(
+            text = imageTitle,
+            fontSize = 16.sp,
+            color = MaterialTheme.colors.onPrimary
+        )
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colors.onBackground)
+                .padding(4.dp)
+        ) {
+            Text(
+                text = imageDescription,
+                fontSize = 12.sp,
+                color = MaterialTheme.colors.onPrimary
+            )
+        }
+    }
+}
+
 
 @Composable
 fun CourseHeaderAvatar(
@@ -75,7 +111,10 @@ fun CourseHeaderAvatar(
         Icon(
             painter = Circle(Color.Blue),
             contentDescription = "icon status",
-            modifier = Modifier.align(Alignment.BottomEnd).size(24.dp).padding(4.dp),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .size(24.dp)
+                .padding(4.dp),
             tint = Color.Unspecified
         )
     }
