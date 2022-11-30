@@ -99,7 +99,7 @@ val typography = Typography(
 @Composable
 fun ComposePlaygroundTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (!useDarkTheme) {
         LightColors
