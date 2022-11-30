@@ -68,8 +68,8 @@ fun CourseHeaderTitle(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
-            .padding(start = 16.dp)
+        modifier = modifier
+            .padding(16.dp)
     ) {
         Text(
             text = imageTitle,
