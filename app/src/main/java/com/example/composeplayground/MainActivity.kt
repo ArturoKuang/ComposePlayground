@@ -3,7 +3,11 @@ package com.example.composeplayground
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,10 +24,12 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -41,13 +47,13 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     Column {
+                        Toolbar()
                         CourseHeader(
                             imageUrl = "https://media.istockphoto.com/id/991883866/photo/stylish-young-man-in-yellow-hoodie-and-white-pants-sitting-on-chair-and-looking-away-on-white.jpg?s=170667a&w=0&k=20&c=nzKdmXK7ce63VoyPIHXpBAaVIBKuqnxph37Z9zJadNY=",
                             imageTitle = "Dimest C.",
                             imageDescription = "Read 240 consecutive pages",
                             modifier = Modifier.padding(start = 16.dp, top = 32.dp)
                         )
-
                         SheetStack()
                     }
                 }
@@ -57,21 +63,41 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun Toolbar(modifier: Modifier = Modifier) {
+    Row(modifier) {
+        Image(
+            painter = painterResource(id = R.drawable.back_arrow),
+            contentDescription = "back button",
+            modifier = Modifier
+                .padding(16.dp)
+                .size(24.dp)
+        )
+    }
+}
+
+@Composable
 fun SheetStack(modifier: Modifier = Modifier) {
     val sheetState = remember { mutableStateOf(SheetState.Collapsed) }
+    val animationSpec = spring(
+        visibilityThreshold = Dp.VisibilityThreshold,
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessLow
+    )
 
     val heightTop: Dp by animateDpAsState(
         targetValue = when (sheetState.value) {
-            SheetState.Collapsed -> 100.dp
-            SheetState.Expanded -> 20.dp
-        }
+            SheetState.Collapsed -> 32.dp
+            SheetState.Expanded -> 0.dp
+        },
+        animationSpec = animationSpec
     )
 
     val heightBottom: Dp by animateDpAsState(
         targetValue = when (sheetState.value) {
-            SheetState.Collapsed -> 300.dp
+            SheetState.Collapsed -> 150.dp
             SheetState.Expanded -> 500.dp
-        }
+        },
+        animationSpec = animationSpec
     )
 
     Box(modifier = modifier) {
@@ -111,7 +137,9 @@ fun BottomSheet(
             .background(MaterialTheme.colors.onPrimary)
             .padding(16.dp)
     ) {
+        Row() {
 
+        }
     }
 }
 
