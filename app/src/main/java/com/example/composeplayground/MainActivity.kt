@@ -24,14 +24,15 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.composeplayground.ui.theme.ComposePlaygroundTheme
 
@@ -72,12 +73,21 @@ fun Toolbar(modifier: Modifier = Modifier) {
                 .padding(16.dp)
                 .size(24.dp)
         )
+
+        CourseHeaderAvatar(modifier = Modifier.size(45.dp), imageSize = 40.dp, imageUrl = "https://media.istockphoto.com/id/991883866/photo/stylish-young-man-in-yellow-hoodie-and-white-pants-sitting-on-chair-and-looking-away-on-white.jpg?s=170667a&w=0&k=20&c=nzKdmXK7ce63VoyPIHXpBAaVIBKuqnxph37Z9zJadNY=")
+        Text(
+            text = "Dimest C.",
+            color = MaterialTheme.colors.onPrimary,
+            style = MaterialTheme.typography.h3,
+            fontSize = 20.sp,
+        )
     }
 }
 
 @Composable
 fun SheetStack(modifier: Modifier = Modifier) {
     val sheetState = remember { mutableStateOf(SheetState.Collapsed) }
+
     val animationSpec = spring(
         visibilityThreshold = Dp.VisibilityThreshold,
         dampingRatio = Spring.DampingRatioNoBouncy,
@@ -205,7 +215,7 @@ fun CourseHeader(
 @Composable
 fun CourseHeaderTitle(
     imageTitle: String,
-    imageDescription: String,
+    imageDescription: String?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -218,35 +228,43 @@ fun CourseHeaderTitle(
             style = MaterialTheme.typography.h3
         )
 
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colors.onBackground)
-                .padding(start = 8.dp, top = 2.dp, end = 8.dp, bottom = 2.dp)
-        ) {
-            Text(
-                text = imageDescription,
-                color = MaterialTheme.colors.onPrimary,
-                style = MaterialTheme.typography.body1
-            )
+        if (imageDescription != null) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(MaterialTheme.colors.onBackground)
+                    .padding(start = 8.dp, top = 2.dp, end = 8.dp, bottom = 2.dp)
+            ) {
+                Text(
+                    text = imageDescription,
+                    color = MaterialTheme.colors.onPrimary,
+                    style = MaterialTheme.typography.body1
+                )
+            }
         }
     }
 }
 
+fun Dp.max(other: Dp): Dp = if (this > other) this else other
 
 @Composable
 fun CourseHeaderAvatar(
     imageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageSize: Dp = 80.dp,
 ) {
     Box(modifier) {
+        val circleSize = (imageSize / 3.34f).max(13.dp)
+        val roundedCornerSize = imageSize / 6.67f
+        val padding = imageSize / 20f
+
         AsyncImage(
             model = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = modifier
-                .clip(RoundedCornerShape(12.dp))
-                .size(80.dp)
+                .clip(RoundedCornerShape(roundedCornerSize))
+                .size(imageSize)
                 .aspectRatio(1f)
         )
         Icon(
@@ -254,8 +272,8 @@ fun CourseHeaderAvatar(
             contentDescription = "icon status",
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .size(24.dp)
-                .padding(4.dp),
+                .size(circleSize)
+                .padding(padding),
             tint = Color.Unspecified
         )
     }
@@ -271,7 +289,7 @@ class Circle(private val color: Color) : Painter() {
         get() = Size(10f, 10f)
 
     override fun DrawScope.onDraw() {
-        val stroke = Stroke(2.5f)
+        val stroke = Stroke(size.minDimension / 20f)
         drawCircle(color = color)
         val arcRadius = (size.minDimension / 2f) - (stroke.width * 2f)
         val arcBounds = Rect(
@@ -293,10 +311,26 @@ class Circle(private val color: Color) : Painter() {
     }
 }
 
-// @Preview(showBackground = true)
-// @Composable
-// fun DefaultPreview() {
-//    ComposePlaygroundTheme {
-//
-//    }
-// }
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    ComposePlaygroundTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+
+            Column {
+                Toolbar()
+                CourseHeader(
+                    imageUrl = "https://media.istockphoto.com/id/991883866/photo/stylish-young-man-in-yellow-hoodie-and-white-pants-sitting-on-chair-and-looking-away-on-white.jpg?s=170667a&w=0&k=20&c=nzKdmXK7ce63VoyPIHXpBAaVIBKuqnxph37Z9zJadNY=",
+                    imageTitle = "Dimest C.",
+                    imageDescription = "Read 240 consecutive pages",
+                    modifier = Modifier.padding(start = 16.dp, top = 32.dp)
+                )
+                SheetStack()
+            }
+        }
+    }
+}
